@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ARIHANT MOBILE SHOPPE – Purchase List</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+:root{--bg:#f3f4f8;--card:#fff;--tx:#161a22;--mute:#6b7280;--bd:#e4e7ee;--ac:#4f46e5;--ac2:#7c3aed;--ok:#16a34a;--chip:#eef0f6;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1015;--card:#181b22;--tx:#eef0f4;--mute:#9aa3b0;--bd:#2a2e38;--ac:#818cf8;--ac2:#a78bfa;--ok:#4ade80;--chip:#232731;color-scheme:dark}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.35 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:0 12px 24px;max-width:640px;margin:0 auto}
+header{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;border-radius:0 0 20px 20px;margin:0 -12px 12px;padding:14px 16px 16px}
+header h1{margin:0 0 10px;font-size:20px}
+.bar{display:flex;gap:8px;align-items:center}
+.bar input{flex:1;background:rgba(255,255,255,.18);color:#fff;border:0;text-align:center;font-weight:600;color-scheme:dark}
+.bar button{background:rgba(255,255,255,.18);color:#fff;border:0;width:44px}
+.prog{height:6px;background:rgba(255,255,255,.25);border-radius:9px;margin-top:12px;overflow:hidden}
+.prog i{display:block;height:100%;background:#fff;width:0;transition:width .3s}
+.pt{font-size:13px;margin-top:6px;opacity:.95}
+input,button,select{font:inherit;color:var(--tx);border:1px solid var(--bd);border-radius:12px;padding:11px 12px;background:var(--card)}
+button{cursor:pointer}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:12px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.lbl{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--mute);margin:8px 0 6px}
+.lbl:first-child{margin-top:0}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{background:var(--chip);border:0;border-radius:999px;padding:8px 13px;font-size:14px;white-space:nowrap}
+.chip.on{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;font-weight:600}
+.chip.plus{background:transparent;border:1.5px dashed var(--ac);color:var(--ac);font-weight:600}
+.newrow{flex:1 0 100%;display:flex;gap:6px;margin-top:2px}
+.newrow input{flex:1;min-width:0}
+.newrow .sv{background:var(--ac);color:#fff;border:0;font-weight:700}
+.f{width:100%}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.go{display:flex;gap:8px;margin-top:12px}
+.qty{display:flex;align-items:center;gap:2px;flex:none}
+.qty button{width:40px;padding:11px 0;font-size:18px;line-height:1}
+.qty input{width:56px;text-align:center;padding:11px 2px}
+.add{flex:1;background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;border:0;font-weight:700;font-size:16px}
+.add:active{transform:scale(.98)}
+.dl{width:100%;background:var(--ok);color:#fff;border:0;font-weight:700;margin-bottom:6px}
+.dl.alt{background:transparent;color:var(--ok);border:1.5px solid var(--ok);font-weight:600;font-size:14px}
+.hint{color:var(--mute);font-size:13px;margin:6px 2px 0}
+.person{font-weight:800;margin:16px 2px 6px;font-size:15px;display:flex;justify-content:space-between}
+.person span{color:var(--mute);font-weight:500;font-size:13px}
+.item{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:10px 10px 10px 12px;margin-bottom:6px}
+.item input[type=checkbox]{width:26px;height:26px;flex:none;accent-color:var(--ok);padding:0}
+.t{flex:1;min-width:0;cursor:pointer}
+.n{font-weight:600}
+.m{color:var(--mute);font-size:13px}
+.m a{color:var(--ac);text-decoration:none}
+.item.done{background:transparent}
+.item.done .n{text-decoration:line-through;color:var(--mute)}
+.tag{font-size:12px;padding:3px 9px;border-radius:999px;background:var(--chip);color:var(--mute);white-space:nowrap}
+.tag.b{background:color-mix(in srgb,var(--ok) 18%,transparent);color:var(--ok);font-weight:600}
+.del{border:0;background:none;color:var(--mute);padding:6px 8px}
+.empty{text-align:center;color:var(--mute);padding:28px 10px}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:flex-end;justify-content:center;z-index:50}
+.ov[hidden]{display:none}
+.sheet{background:var(--card);width:100%;max-width:640px;border-radius:20px 20px 0 0;padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));max-height:92vh;overflow:auto}
+.sh-t{font-size:18px;font-weight:800}
+.chk{display:flex;align-items:center;gap:10px;margin:14px 0 4px;font-weight:600}
+.chk input{width:24px;height:24px;accent-color:var(--ac);padding:0}
+.till{margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--chip);font-weight:600;min-height:20px}
+</style>
+</head>
+<body>
+<header>
+  <h1>🛒 ARIHANT MOBILE SHOPPE</h1>
+  <div class="bar"><button id="prev">‹</button><input type="date" id="date"><button id="next">›</button></div>
+  <div class="prog"><i id="pb"></i></div><div class="pt" id="pt"></div>
+</header>
+
+<div class="card">
+  <div class="lbl">Mobile brand</div>
+  <div class="chips" id="brands"></div>
+  <div class="lbl">Item</div>
+  <div class="chips" id="cats"></div>
+  <div class="two">
+    <input class="f" id="mod" list="mods" placeholder="Model (e.g. A15)" autocomplete="off">
+    <input class="f" id="det" placeholder="Details (optional)" autocomplete="off">
+  </div>
+  <datalist id="mods"></datalist>
+  <div class="lbl" style="margin-top:12px">For whom</div>
+  <div class="chips" id="people"></div>
+  <input class="f" id="who" placeholder="Person name" style="margin-top:6px" autocomplete="off">
+  <input class="f" id="ph" type="tel" inputmode="tel" placeholder="Phone number (optional)" style="margin-top:6px" autocomplete="off">
+  <div class="go">
+    <div class="qty"><button id="qm">−</button><input id="qv" type="number" inputmode="numeric" min="1" value="1"><button id="qp">+</button></div>
+    <button class="add" id="add">+ Add item</button>
+  </div>
+</div>
+
+<button class="dl" id="dl">⬇ Download Excel (with checkboxes)</button>
+<button class="dl alt" id="dl2">⬇ Excel – dropdown version (for phone apps without checkbox)</button>
+<div class="hint" id="hint"></div>
+<div id="list"></div>
+
+<div class="ov" id="ov" hidden>
+  <div class="sheet">
+    <div class="sh-t" id="mT"></div>
+    <div class="m" id="mS"></div>
+    <div class="lbl" style="margin-top:14px">Purchase amount (₹)</div>
+    <input class="f" id="mAmt" type="number" inputmode="decimal" min="0" placeholder="e.g. 250">
+    <label class="chk"><input type="checkbox" id="mWar"> Warranty available</label>
+    <div id="mWbox" hidden>
+      <div class="two">
+        <input class="f" id="mN" type="number" inputmode="numeric" min="1" placeholder="How many?">
+        <select class="f" id="mU"><option value="year">Year(s)</option><option value="month">Month(s)</option><option value="day">Day(s)</option></select>
+      </div>
+      <div class="lbl" style="margin-top:10px">Purchase date</div>
+      <input class="f" id="mPd" type="date">
+      <div class="till" id="mTill"></div>
+    </div>
+    <div class="go"><button class="chip" id="mCancel">Cancel</button><button class="add" id="mSave">Save</button></div>
+  </div>
+</div>
+
+<script>
+var KEY="buylist.v1",CK="buylist.cats",BK="buylist.brands",SHOP="Shop Stock";
+var DEFC=["Phone","Cover","Ladies Cover","Display","Screen Guard","Paper Guard","Headphone","Bluetooth","Headset","Charger","Cable"];
+var DEFB=["Samsung","Vivo","Xiaomi","Redmi","Oppo","iPhone","Realme","OnePlus","Poco","Motorola","Nokia","Infinix","Tecno","iQOO","Lava","Itel","Pixel"];
+var data={},cats=DEFC.slice(),brands=DEFB.slice(),sel={brand:"",cat:"",who:""},adding="",openId="";
+function $(i){return document.getElementById(i)}
+function rd(k,def){try{var v=JSON.parse(localStorage.getItem(k));return v&&v.length?v:def}catch(e){return def}}
+function load(){try{data=JSON.parse(localStorage.getItem(KEY))||{}}catch(e){data={}}cats=rd(CK,cats);brands=rd(BK,brands)}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(data));localStorage.setItem(CK,JSON.stringify(cats));localStorage.setItem(BK,JSON.stringify(brands))}catch(e){}}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function today(){var d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)}
+function shift(n){var d=new Date($("date").value+"T00:00");d.setDate(d.getDate()+n);d.setMinutes(d.getMinutes()-d.getTimezoneOffset());$("date").value=d.toISOString().slice(0,10);render()}
+function fmtD(dt){return dt.toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"})}
+function addPeriod(ds,n,u){var d=new Date(ds+"T00:00");n=parseInt(n)||0;if(u==="year")d.setFullYear(d.getFullYear()+n);else if(u==="month")d.setMonth(d.getMonth()+n);else d.setDate(d.getDate()+n);return d}
+function wText(w){if(!w||!w.has||!w.n)return"";var U={year:"Year",month:"Month",day:"Day"}[w.u]||"Year";return w.n+" "+U+(w.n>1?"s":"")}
+function wTill(i,dk){var w=i.wr;if(!w||!w.has||!w.n)return"";return fmtD(addPeriod(i.pd||dk,w.n,w.u))}
+function pkey(i){return i.who===SHOP?"\u0000":(i.who||"~").toLowerCase()}
+function sorted(arr){return arr.slice().sort(function(a,b){return pkey(a).localeCompare(pkey(b))||(a.mod||"").toLowerCase().localeCompare((b.mod||"").toLowerCase())||(a.mob||"").toLowerCase().localeCompare((b.mob||"").toLowerCase())})}
+function chips(id,arr,key,extra){
+  $(id).innerHTML=arr.map(function(c){return '<button class="chip'+(sel[key]===c?' on':'')+'" data-k="'+key+'" data-v="'+esc(c)+'">'+(c===SHOP?"🏪 ":"")+esc(c)+'</button>'}).join("")+(extra||"");
+}
+function newUI(type,label){
+  if(adding===type)return '<div class="newrow"><input id="newin" placeholder="'+(type==="brand"?"Type mobile brand":"Type item name")+'" autocomplete="off"><button class="chip sv" data-save="'+type+'">Add</button><button class="chip" data-new="">Cancel</button></div>';
+  return '<button class="chip plus" data-new="'+type+'">'+label+'</button>';
+}
+function saveNew(type){
+  var n=($("newin").value||"").trim();if(!n)return;
+  var arr=type==="brand"?brands:cats;
+  var ex=arr.filter(function(x){return x.toLowerCase()===n.toLowerCase()})[0];
+  if(ex)n=ex;else arr.push(n);
+  sel[type]=n;adding="";save();renderPick();
+}
+function fillPhone(){
+  var p="";
+  if(sel.who){Object.keys(data).sort().forEach(function(d){(data[d]||[]).forEach(function(i){if(i.who===sel.who&&i.ph)p=i.ph})})}
+  $("ph").value=p;
+}
+function recentPeople(){
+  var seen={},out=[];
+  Object.keys(data).sort().reverse().forEach(function(d){(data[d]||[]).forEach(function(i){var w=(i.who||"").trim();if(w&&w!==SHOP&&!seen[w.toLowerCase()]){seen[w.toLowerCase()]=1;out.push(w)}})});
+  return out.slice(0,12);
+}
+function renderPick(){
+  chips("brands",brands,"brand",newUI("brand","+ New mobile"));
+  chips("cats",cats,"cat",newUI("cat","+ New item"));
+  chips("people",[SHOP].concat(recentPeople()),"who");
+  var ml={};
+  Object.keys(data).forEach(function(d){(data[d]||[]).forEach(function(i){if(i.mod&&(!sel.brand||i.mob===sel.brand))ml[i.mod]=1})});
+  $("mods").innerHTML=Object.keys(ml).map(function(m){return '<option value="'+esc(m)+'">'}).join("");
+}
+function render(){
+  var d=$("date").value,items=sorted(data[d]||[]);
+  var b=items.filter(function(i){return i.done}).length;
+  $("pb").style.width=(items.length?b/items.length*100:0)+"%";
+  $("pt").textContent=items.length?b+" of "+items.length+" bought":"No items yet";
+  $("hint").textContent=items.length?"Tap an item to add warranty & amount":"";
+  if(!items.length){$("list").innerHTML='<div class="empty">Nothing here yet.<br>Pick a brand, item and person, then tap Add.</div>';return}
+  var html="",last=null,cnt={};
+  items.forEach(function(i){var p=i.who||"No name";cnt[p]=cnt[p]||[0,0];cnt[p][1]++;if(i.done)cnt[p][0]++});
+  items.forEach(function(i){
+    var p=i.who||"No name";
+    if(p!==last){html+='<div class="person">'+(p===SHOP?'🏪 Shop Stock (bulk order)':'👤 '+esc(p))+'<span>'+cnt[p][0]+'/'+cnt[p][1]+'</span></div>';last=p}
+    var title=[i.cat,i.det].filter(Boolean).join(" – ")||"Item";
+    var meta=[i.mob,i.mod].filter(Boolean).join(" ")+(i.qty>1?" · Qty "+i.qty:"");
+    html+='<div class="item'+(i.done?' done':'')+'"><input type="checkbox" data-id="'+i.id+'"'+(i.done?' checked':'')+'>'+
+      '<div class="t" data-open="'+i.id+'"><div class="n">'+esc(title)+'</div><div class="m">'+esc(meta)+'</div>'+
+      (i.ph?'<div class="m">📞 <a href="tel:'+esc(i.ph)+'">'+esc(i.ph)+'</a></div>':'')+'</div>'+
+      '<span class="tag'+(i.done?' b':'')+'" data-open="'+i.id+'">'+(i.done?'Bought':'Not bought')+'</span>'+
+      '<button class="del" data-del="'+i.id+'">✕</button></div>';
+  });
+  $("list").innerHTML=html;
+}
+function add(){
+  var mod=$("mod").value.trim(),det=$("det").value.trim(),who=($("who").value.trim()||sel.who),ph=$("ph").value.trim();
+  if(!sel.cat&&!sel.brand&&!mod&&!det){return}
+  var q=Math.max(1,parseInt($("qv").value)||1),d=$("date").value;
+  (data[d]=data[d]||[]).push({id:Date.now()+""+Math.floor(Math.random()*999),cat:sel.cat,mob:sel.brand,mod:mod,det:det,who:who,qty:q,ph:ph,done:false});
+  if(who&&sel.who!==who)sel.who=who;
+  save();$("who").value="";$("ph").value="";$("mod").value="";$("det").value="";$("qv").value=1;
+  fillPhone();renderPick();render();$("mod").focus();
+}
+/* ---- item details (warranty + amount) ---- */
+function findItem(id){var a=data[$("date").value]||[];for(var k=0;k<a.length;k++)if(a[k].id===id)return a[k]}
+function updTill(){
+  var on=$("mWar").checked;$("mWbox").hidden=!on;
+  if(!on){return}
+  var n=parseInt($("mN").value),pd=$("mPd").value;
+  $("mTill").textContent=(n>0&&pd)?"✅ Warranty valid till: "+fmtD(addPeriod(pd,n,$("mU").value)):"Enter how many years / months / days";
+}
+function openItem(id){
+  var i=findItem(id);if(!i)return;openId=id;
+  $("mT").textContent=[i.cat,i.det].filter(Boolean).join(" – ")||"Item";
+  $("mS").textContent=[i.mob,i.mod].filter(Boolean).join(" ")+" · "+(i.who===SHOP?"🏪 Shop Stock":(i.who||"No name"))+(i.qty>1?" · Qty "+i.qty:"");
+  $("mAmt").value=i.amt||"";
+  var w=i.wr||{};
+  $("mWar").checked=!!w.has;$("mN").value=w.n||"";$("mU").value=w.u||"year";
+  $("mPd").value=i.pd||$("date").value;
+  updTill();$("ov").hidden=false;
+}
+function closeItem(){$("ov").hidden=true;openId=""}
+function saveItem(){
+  var i=findItem(openId);if(!i)return closeItem();
+  var a=parseFloat($("mAmt").value);i.amt=isNaN(a)?"":a;
+  i.wr={has:$("mWar").checked,n:parseInt($("mN").value)||0,u:$("mU").value};
+  i.pd=$("mPd").value||"";
+  save();closeItem();render();
+}
+["mWar","mN","mU","mPd"].forEach(function(id){$(id).addEventListener("input",updTill);$(id).addEventListener("change",updTill)});
+$("mSave").onclick=saveItem;$("mCancel").onclick=closeItem;
+$("ov").addEventListener("click",function(e){if(e.target===$("ov"))closeItem()});
+/* ---- clicks ---- */
+document.addEventListener("click",function(e){
+  var op=e.target.closest("[data-open]");
+  if(op&&!e.target.closest("a")){openItem(op.getAttribute("data-open"));return}
+  var t=e.target.closest("button,input");if(!t)return;
+  var k=t.getAttribute("data-k"),v=t.getAttribute("data-v"),nw=t.getAttribute("data-new");
+  if(k){sel[k]=sel[k]===v?"":v;if(k==="who"){$("who").value="";fillPhone()}renderPick();return}
+  if(nw!==null){adding=nw;renderPick();var ni=$("newin");if(ni)ni.focus();return}
+  var sv=t.getAttribute("data-save");if(sv){saveNew(sv);return}
+  var id=t.getAttribute("data-id"),del=t.getAttribute("data-del"),d=$("date").value;
+  if(id){(data[d]||[]).forEach(function(i){if(i.id===id){i.done=t.checked;if(i.done&&!i.pd)i.pd=today()}});save();render()}
+  if(del){data[d]=(data[d]||[]).filter(function(i){return i.id!==del});save();renderPick();render()}
+});
+$("who").oninput=function(){if(this.value)sel.who="";};
+$("add").onclick=add;
+document.addEventListener("keydown",function(e){if(e.key==="Enter"&&e.target.id==="newin")saveNew(adding)});
+$("det").onkeydown=$("mod").onkeydown=function(e){if(e.key==="Enter")add()};
+$("qm").onclick=function(){$("qv").value=Math.max(1,(parseInt($("qv").value)||1)-1)};
+$("qp").onclick=function(){$("qv").value=(parseInt($("qv").value)||1)+1};
+$("prev").onclick=function(){shift(-1)};
+$("next").onclick=function(){shift(1)};
+$("date").onchange=render;
+/* ---- Excel export ---- */
+function exportXls(mode){
+  var d=$("date").value,items=sorted(data[d]||[]),cb=mode!=="dd";
+  if(!items.length){$("pt").textContent="No items to download for this day";return}
+  var pretty=fmtD(new Date(d+"T00:00"));
+  var fname="Arihant_Mobile_Shoppe_Purchase_"+d+(cb?"":"_dropdown");
+  var x=function(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")};
+  var L="ABCDEFGHIJKLM";
+  var T=function(r,c,t,s){return '<c r="'+L[c]+r+'" s="'+s+'" t="inlineStr"><is><t>'+x(t)+'</t></is></c>'};
+  var N=function(r,c,v,s){return '<c r="'+L[c]+r+'" s="'+s+'"><v>'+v+'</v></c>'};
+  var rows=[];
+  rows.push('<row r="1" ht="24" customHeight="1">'+T(1,0,"ARIHANT MOBILE SHOPPE",2)+'</row>');
+  rows.push('<row r="2">'+T(2,0,"Today\u2019s Purchase Sheet",4)+'</row>');
+  rows.push('<row r="3">'+T(3,0,"Date: "+pretty,4)+'</row>');
+  var H=["S.No","For (Person / Shop)","Phone","Mobile","Model","Item","Details","Qty","Amount (\u20B9)","Warranty","Warranty Till","Bought","Status"];
+  rows.push('<row r="5">'+H.map(function(h,c){return T(5,c,h,3)}).join("")+'</row>');
+  var first=6,last=first+items.length-1,b=0,sum=0;
+  items.forEach(function(i,n){
+    var r=first+n;if(i.done)b++;
+    var amt=parseFloat(i.amt);if(!isNaN(amt))sum+=amt;
+    var bc=cb?'<c r="L'+r+'" s="1" t="b"><v>'+(i.done?1:0)+'</v></c>':T(r,11,i.done?"Yes":"No",6);
+    var cond=cb?'I'+r:'L'+r+'="Yes"';
+    rows.push('<row r="'+r+'">'+N(r,0,n+1,6)+T(r,1,i.who===SHOP?"Shop Stock":(i.who||""),5)+T(r,2,i.ph||"",5)+T(r,3,i.mob||"",5)+T(r,4,i.mod||"",5)+T(r,5,i.cat||"",5)+T(r,6,i.det||"",5)+N(r,7,i.qty||1,6)+
+      (isNaN(amt)?T(r,8,"",5):N(r,8,amt,6))+T(r,9,wText(i.wr)||"No warranty",5)+T(r,10,wTill(i,d)||"-",5)+bc+
+      '<c r="M'+r+'" s="5" t="str"><f>IF('+(cb?'L'+r:'L'+r+'="Yes"')+',"Bought","Not bought")</f><v>'+(i.done?"Bought":"Not bought")+'</v></c></row>');
+  });
+  var s=last+2,tot=items.length;
+  var crit=cb?'TRUE':'"Yes"';
+  rows.push('<row r="'+s+'">'+T(s,0,"Total items",4)+'<c r="C'+s+'" s="4"><f>COUNT(A'+first+':A'+last+')</f><v>'+tot+'</v></c></row>');
+  rows.push('<row r="'+(s+1)+'">'+T(s+1,0,"Bought",4)+'<c r="C'+(s+1)+'" s="4"><f>COUNTIF(L'+first+':L'+last+','+crit+')</f><v>'+b+'</v></c></row>');
+  rows.push('<row r="'+(s+2)+'">'+T(s+2,0,"Not bought",4)+'<c r="C'+(s+2)+'" s="4"><f>C'+s+'-C'+(s+1)+'</f><v>'+(tot-b)+'</v></c></row>');
+  rows.push('<row r="'+(s+3)+'">'+T(s+3,0,"Total amount (\u20B9)",4)+'<c r="C'+(s+3)+'" s="4"><f>SUM(I'+first+':I'+last+')</f><v>'+sum+'</v></c></row>');
+  var W=[6,20,15,13,15,17,24,6,13,14,15,9,13];
+  var dv=cb?'':'<dataValidations count="1"><dataValidation type="list" allowBlank="1" showInputMessage="1" showErrorMessage="1" sqref="L'+first+':L'+last+'"><formula1>"Yes,No"</formula1></dataValidation></dataValidations>';
+  var sheet='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView tabSelected="1" workbookViewId="0"/></sheetViews><sheetFormatPr defaultRowHeight="15"/><cols>'+
+    W.map(function(w,i){return '<col min="'+(i+1)+'" max="'+(i+1)+'" width="'+w+'" customWidth="1"/>'}).join("")+'</cols><sheetData>'+rows.join("")+
+    '</sheetData><mergeCells count="1"><mergeCell ref="A1:M1"/></mergeCells>'+dv+'<pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3"/></worksheet>';
+  var xf0='numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"';
+  var styles='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'+
+    '<fonts count="4"><font><sz val="11"/><name val="Calibri"/><family val="2"/></font><font><b/><sz val="11"/><name val="Calibri"/><family val="2"/></font><font><b/><sz val="16"/><name val="Calibri"/><family val="2"/></font><font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/><family val="2"/></font></fonts>'+
+    '<fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF4F46E5"/><bgColor indexed="64"/></patternFill></fill></fills>'+
+    '<borders count="2"><border><left/><right/><top/><bottom/><diagonal/></border><border><left style="thin"><color rgb="FFBFC5D2"/></left><right style="thin"><color rgb="FFBFC5D2"/></right><top style="thin"><color rgb="FFBFC5D2"/></top><bottom style="thin"><color rgb="FFBFC5D2"/></bottom><diagonal/></border></borders>'+
+    '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="7">'+
+    '<xf '+xf0+'/>'+
+    '<xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1"><alignment horizontal="center"/><extLst><ext uri="{C7286773-470A-42A8-94C5-96B5CB345126}" xmlns:xfpb="http://schemas.microsoft.com/office/spreadsheetml/2022/featurepropertybag"><xfpb:xfComplement i="0"/></ext></extLst></xf>'+
+    '<xf numFmtId="0" fontId="2" fillId="0" borderId="0" xfId="0" applyFont="1"/>'+
+    '<xf numFmtId="0" fontId="3" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1"><alignment horizontal="center"/></xf>'+
+    '<xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/>'+
+    '<xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1"/>'+
+    '<xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1"><alignment horizontal="center"/></xf>'+
+    '</cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>';
+  var XH='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+  var RN="http://schemas.openxmlformats.org/officeDocument/2006/relationships";
+  var zip=new JSZip();
+  zip.file("[Content_Types].xml",XH+'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/><Override PartName="/xl/featurePropertyBag/featurePropertyBag.xml" ContentType="application/vnd.ms-excel.featurepropertybag+xml"/></Types>');
+  zip.file("_rels/.rels",XH+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="'+RN+'/officeDocument" Target="xl/workbook.xml"/></Relationships>');
+  zip.file("xl/workbook.xml",XH+'<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="'+RN+'"><sheets><sheet name="Purchase" sheetId="1" r:id="rId1"/></sheets><calcPr calcId="124519" fullCalcOnLoad="1"/></workbook>');
+  zip.file("xl/_rels/workbook.xml.rels",XH+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="'+RN+'/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="'+RN+'/styles" Target="styles.xml"/><Relationship Id="rId3" Type="http://schemas.microsoft.com/office/2022/11/relationships/FeaturePropertyBag" Target="featurePropertyBag/featurePropertyBag.xml"/></Relationships>');
+  zip.file("xl/featurePropertyBag/featurePropertyBag.xml",XH+'<FeaturePropertyBags xmlns="http://schemas.microsoft.com/office/spreadsheetml/2022/featurepropertybag"><bag type="Checkbox"/><bag type="XFControls"><bagId k="CellControl">0</bagId></bag><bag type="XFComplement"><bagId k="XFControls">1</bagId></bag><bag type="XFComplements" extRef="XFComplementsMapperExtRef"><a k="MappedFeaturePropertyBags"><bagId>2</bagId></a></bag></FeaturePropertyBags>');
+  zip.file("xl/styles.xml",styles);
+  zip.file("xl/worksheets/sheet1.xml",sheet);
+  zip.generateAsync({type:"blob",mimeType:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}).then(function(blob){
+    var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=fname+".xlsx";document.body.appendChild(a);a.click();a.remove();
+  });
+}
+$("dl").onclick=function(){exportXls("cb")};
+$("dl2").onclick=function(){exportXls("dd")};
+load();$("date").value=today();renderPick();render();
+</script>
+</body>
+</html>
